@@ -1,25 +1,43 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import axios from 'axios';
+
+const API_BASE_URL = 'http://your-api-url.com/api'; // Replace with your actual API URL
 
 const OnboardingScreen3 = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
 
-  const handleGetStarted = () => {
+  const handleGetStarted = async () => {
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailError('Invalid email address');
       return;
     }
+
     // Clear any existing error
     setEmailError('');
 
-    // Navigate to the next screen or home screen after validation
-    navigation.navigate('HomeScreen'); // Replace with the actual home screen name
+    try {
+      // API call to submit email
+      const response = await axios.post(`${API_BASE_URL}/submit-email`, { email });
+
+      // Handle response from the API
+      if (response.status === 200) {
+        Alert.alert('Success', 'Email submitted successfully!');
+        // Navigate to the next screen or home screen
+        navigation.navigate('HomeScreen'); // Replace with the actual home screen name
+      } else {
+        Alert.alert('Error', 'Failed to submit email. Please try again.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to submit email. Please try again.');
+    }
   };
 
   return (
@@ -55,48 +73,7 @@ const OnboardingScreen3 = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.navigate('CreateProfile')}>
           <Text style={styles.navigationText}>Create Profile</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('CreateYourAccount')}>
-          <Text style={styles.navigationText}>Create Your Account</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('EditProfileScreen')}>
-          <Text style={styles.navigationText}>Edit Your Account</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
-          <Text style={styles.navigationText}>Forgot Password</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('InterestSelectionScreen')}>
-          <Text style={styles.navigationText}>Interest Selection</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.navigationText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('MovieDetails')}>
-          <Text style={styles.navigationText}>Movie Details</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('OnboardingScreen1')}>
-          <Text style={styles.navigationText}>Onboarding Screen 1</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('OnboardingScreen2')}>
-          <Text style={styles.navigationText}>Onboarding Screen 2</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('OnboardingScreen3')}>
-          <Text style={styles.navigationText}>Onboarding Screen 3</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('PasswordReset')}>
-          <Text style={styles.navigationText}>Password Reset</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Payment')}>
-          <Text style={styles.navigationText}>Payment</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-          <Text style={styles.navigationText}>Settings</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('VideoQualitySettings')}>
-          <Text style={styles.navigationText}>Video Quality Settings</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('WhoIsWatching')}>
-          <Text style={styles.navigationText}>Who Is Watching</Text>
-        </TouchableOpacity>
+        {/* Additional navigation options */}
       </View>
 
       <View style={styles.dotsContainer}>

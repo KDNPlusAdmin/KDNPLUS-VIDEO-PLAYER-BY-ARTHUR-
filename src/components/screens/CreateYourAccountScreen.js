@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useState, useContext } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import { useNavigation } from '@react-navigation/native'; // Import navigation
+import { registerUser } from '../api/authService'; // Import API function
 
 const CreateYourAccountScreen = () => {
+  const { setUser } = useContext(AuthContext); // Use AuthContext to access setUser
+  const navigation = useNavigation(); // Use navigation
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +19,7 @@ const CreateYourAccountScreen = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [passwordStrength, setPasswordStrength] = useState(0);
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     // Basic input validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -40,10 +46,29 @@ const CreateYourAccountScreen = () => {
       return;
     }
 
-    // Implement signup logic here
-    console.log('Sign up button pressed');
-    // Navigation to next screen
-    navigation.navigate('HomeScreen'); // Replace with actual screen name
+    try {
+      // Call the registerUser API function
+      const response = await registerUser({
+        email,
+        username,
+        password,
+        rememberMe,
+      });
+
+      // Handle successful registration
+      setUser({
+        email,
+        username,
+        rememberMe,
+        token: response.token, // Assuming API response includes a token
+      });
+
+      // Navigate to the next screen
+      navigation.navigate('HomeScreen'); // Replace with the actual screen name
+    } catch (error) {
+      // Handle error
+      Alert.alert('Sign-up Error', 'Failed to create account. Please try again.');
+    }
   };
 
   const calculatePasswordStrength = (password) => {
@@ -128,13 +153,15 @@ const CreateYourAccountScreen = () => {
           <MaterialIcons name="google" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
-      <Text style={styles.alreadyHaveAccount}>Already have an account? <Text style={styles.loginText}>Log in</Text></Text>
+      <Text style={styles.alreadyHaveAccount}>
+        Already have an account? <Text style={styles.loginText}>Log in</Text>
+      </Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  // ... other styles ...
+  // your styles here...
   passwordStrength: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { LoginButton } from 'react-native-facebook-login';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable react/no-unescaped-entities */
+import React, { useState, useContext, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { LoginButton, AccessToken } from 'react-native-fbsdk-next'; // Use the FB SDK for React Native
+import axios from 'axios';
+
+const API_BASE_URL = 'http://your-api-url.com/api'; // Replace with your actual API URL
 
 const styles = StyleSheet.create({
   container: {
@@ -22,6 +30,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     color: '#fff',
     backgroundColor: '#111',
+    marginBottom: 15,
   },
   rememberMeContainer: {
     flexDirection: 'row',
@@ -30,6 +39,7 @@ const styles = StyleSheet.create({
   },
   rememberMeText: {
     color: '#fff',
+    marginLeft: 5,
   },
   loginButton: {
     backgroundColor: 'red',
@@ -53,6 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    marginHorizontal: 10,
   },
   socialIcon: {
     width: 30,
@@ -61,21 +72,50 @@ const styles = StyleSheet.create({
 });
 
 const LoginScreen = () => {
+  const { login, facebookLogin, googleLogin } = useContext(AuthContext); // Access AuthContext
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleLogin = () => {
-    // Implement login logic here
-    console.log('Email:', email, 'Password:', password);
+  // Initialize Google Sign-In configuration
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: 'YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com', // Replace with your Google client ID
+    });
+  }, []);
+
+  const handleLogin = async () => {
+    try {
+      await login(email, password);
+      Alert.alert('Success', 'Logged in successfully!');
+    } catch (error) {
+      Alert.alert('Error', 'Invalid email or password');
+    }
   };
 
-  const handleFacebookLogin = (error, result) => {
-    // Implement Facebook login logic
+  const handleFacebookLogin = async () => {
+    const result = await AccessToken.getCurrentAccessToken();
+    if (result) {
+      try {
+        await facebookLogin(result.accessToken);
+        Alert.alert('Success', 'Logged in with Facebook!');
+      } catch (error) {
+        Alert.alert('Error', 'Facebook login failed. Please try again.');
+      }
+    } else {
+      Alert.alert('Error', 'Facebook login failed. Please try again.');
+    }
   };
 
   const handleGoogleSignIn = async () => {
-    // Implement Google login logic
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      await googleLogin(userInfo.idToken);
+      Alert.alert('Success', 'Logged in with Google!');
+    } catch (error) {
+      Alert.alert('Error', 'Google login failed. Please try again.');
+    }
   };
 
   return (
@@ -85,6 +125,7 @@ const LoginScreen = () => {
         <TextInput
           placeholder="Email"
           keyboardType="email-address"
+          placeholderTextColor="#888"
           value={email}
           onChangeText={(text) => setEmail(text)}
           style={styles.input}
@@ -92,6 +133,7 @@ const LoginScreen = () => {
         <TextInput
           placeholder="Password"
           secureTextEntry
+          placeholderTextColor="#888"
           value={password}
           onChangeText={(text) => setPassword(text)}
           style={styles.input}
@@ -102,16 +144,20 @@ const LoginScreen = () => {
           <Text style={styles.rememberMeText}>Remember me</Text>
         </TouchableOpacity>
       </View>
-      <Button title="Sign in" onPress={handleLogin} style={styles.loginButton} />
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <Text style={styles.loginButtonText}>Sign in</Text>
+      </TouchableOpacity>
       <View style={styles.socialLoginContainer}>
-        <TouchableOpacity style={styles.socialLoginButton}>
+        <TouchableOpacity style={styles.socialLoginButton} onPress={handleFacebookLogin}>
           <Image source={require('./facebook-logo.png')} style={styles.socialIcon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.socialLoginButton}>
+        <TouchableOpacity style={styles.socialLoginButton} onPress={handleGoogleSignIn}>
           <Image source={require('./google-logo.png')} style={styles.socialIcon} />
         </TouchableOpacity>
       </View>
-      <Text style={{ color: '#fff', marginTop: 10 }}>Don't have an account? Sign up</Text>
+      <Text style={{ color: '#fff', marginTop: 10 }}>
+        Don't have an account? <Text style={{ color: '#1E90FF' }}>Sign up</Text>
+      </Text>
     </View>
   );
 };

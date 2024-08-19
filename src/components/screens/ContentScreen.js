@@ -1,3 +1,6 @@
+// src/App.js
+
+/* eslint-disable react/prop-types */
 import React, { useState, useRef } from 'react';
 import {
   View,
@@ -10,10 +13,12 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+// Import AuthProvider from AuthContext.js
+import { AuthProvider } from './context/AuthContext';
+
 // Screens imports
 // Note: Make sure to create these components in their respective files.
 import CreateProfileScreen from './screens/CreateProfileScreen';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import CreateYourAccountScreen from './screens/CreateYourAccountScreen';
 import EditAccountScreen from './screens/EditAccountScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
@@ -140,32 +145,34 @@ const ContentScreen = ({ navigation }) => {
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Content" component={ContentScreen} />
-        <Stack.Screen name="CreateProfile" component={CreateProfileScreen} />
-        <Stack.Screen name="CreateAccount" component={CreateYourAccountScreen} />
-        <Stack.Screen name="EditAccount" component={EditAccountScreen} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-        <Stack.Screen
-          name="InterestSelection"
-          component={InterestSelectionScreen}
-        />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="MovieDetails" component={MovieDetailsScreen} />
-        <Stack.Screen name="Onboarding1" component={OnboardingScreen1} />
-        <Stack.Screen name="Onboarding2" component={OnboardingScreen2} />
-        <Stack.Screen name="Onboarding3" component={OnboardingScreen3} />
-        <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
-        <Stack.Screen name="Payment" component={PaymentScreen} />
-        <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen
-          name="VideoQualitySettings"
-          component={VideoQualitySettingsScreen}
-        />
-        <Stack.Screen name="WhoIsWatching" component={WhoIsWatchingScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Content" component={ContentScreen} />
+          <Stack.Screen name="CreateProfile" component={CreateProfileScreen} />
+          <Stack.Screen name="CreateAccount" component={CreateYourAccountScreen} />
+          <Stack.Screen name="EditAccount" component={EditAccountScreen} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+          <Stack.Screen
+            name="InterestSelection"
+            component={InterestSelectionScreen}
+          />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="MovieDetails" component={MovieDetailsScreen} />
+          <Stack.Screen name="Onboarding1" component={OnboardingScreen1} />
+          <Stack.Screen name="Onboarding2" component={OnboardingScreen2} />
+          <Stack.Screen name="Onboarding3" component={OnboardingScreen3} />
+          <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
+          <Stack.Screen name="Payment" component={PaymentScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen
+            name="VideoQualitySettings"
+            component={VideoQualitySettingsScreen}
+          />
+          <Stack.Screen name="WhoIsWatching" component={WhoIsWatchingScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
   );
 };
 

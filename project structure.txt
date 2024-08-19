@@ -33,3 +33,22 @@ kdnplusvp/
     config.js
   package.json
   tsconfig.json
+  
+  
+  backend/
+├── server.js
+├── .env
+├── package.json
+├── node_modules/
+├── config/
+│   └── db.js
+├── models/
+│   └── User.js
+├── routes/
+│   ├── auth.js
+│   └── users.js
+├── middleware/
+│   └── auth.js
+└── controllers/
+    ├── authController.js
+    └── userController.js

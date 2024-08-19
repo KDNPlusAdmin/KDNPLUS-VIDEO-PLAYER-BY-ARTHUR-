@@ -1,47 +1,56 @@
-import * as React from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 
-// Import screens
+// Import all screens
+import OnboardingScreen1 from './screens/OnboardingScreen1';
+import OnboardingScreen2 from './screens/OnboardingScreen2';
+import OnboardingScreen3 from './screens/OnboardingScreen3';
+import HomeScreen from './screens/HomeScreen';
+import VideoPlayerScreen from './screens/VideoPlayerScreen';
 import ContentScreen from './screens/ContentScreen';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import CreateProfileScreen from './screens/CreateProfileScreen';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import CreateYourAccountScreen from './screens/CreateAccountScreen';
-import EditProfileScreen from './screens/EditAccountScreen';
+import CreateYourAccountScreen from './screens/CreateYourAccountScreen';
+import EditProfileScreen from './screens/EditProfileScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import InterestSelectionScreen from './screens/InterestSelectionScreen';
 import LoginScreen from './screens/LoginScreen';
 import MovieDetailsScreen from './screens/MovieDetailsScreen';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import PasswordResetScreen from './screens/PasswordResetScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import VideoQualitySettingsScreen from './screens/VideoQualitySettingsScreen';
+import VideoQualityScreen from './screens/VideoQualityScreen';
 import WhoIsWatchingScreen from './screens/WhoIsWatchingScreen';
+import UsersScreen from './screens/UsersScreen'; // Import UsersScreen
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
-function App() {
+const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        {/* Add screens here with appropriate options and parameters */}
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="CreateYourAccount" component={CreateYourAccountScreen} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-        <Stack.Screen name="InterestSelection" component={InterestSelectionScreen} />
-        <Stack.Screen name="ContentScreen" component={ContentScreen} />
-        <Stack.Screen name="MovieDetails" component={MovieDetailsScreen} />
-        <Stack.Screen name="CreateProfile" component={CreateProfileScreen} />
-        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-        <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen name="VideoQualitySettings" component={VideoQualitySettingsScreen} />
-        <Stack.Screen name="WhoIsWatching" component={WhoIsWatchingScreen} />
-        <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Navigator initialRouteName="CreateYourAccount">
+        <Stack.Screen name="CreateYourAccount" component={CreateYourAccountScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="PasswordReset" component={PasswordResetScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Onboarding1" component={OnboardingScreen1} options={{ headerShown: false }} />
+        <Stack.Screen name="Onboarding2" component={OnboardingScreen2} options={{ headerShown: false }} />
+        <Stack.Screen name="Onboarding3" component={OnboardingScreen3} options={{ headerShown: false }} />
+        <Stack.Screen name="InterestSelection" component={InterestSelectionScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Content" component={ContentScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MovieDetails" component={MovieDetailsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="VideoQuality" component={VideoQualityScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Payment" component={PaymentScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="WhoIsWatching" component={WhoIsWatchingScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateProfile" component={CreateProfileScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Users" component={UsersScreen} /> {/* Add UsersScreen here */}
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};
 
 export default App;

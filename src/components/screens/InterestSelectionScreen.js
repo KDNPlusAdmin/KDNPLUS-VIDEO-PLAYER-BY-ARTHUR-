@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react/prop-types */
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
+import axios from 'axios'; // Import Axios for API calls
+
+const API_BASE_URL = 'http://your-api-url.com/api'; // Replace with your actual API URL
 
 const styles = StyleSheet.create({
   container: {
@@ -57,10 +62,26 @@ const styles = StyleSheet.create({
   },
 });
 
-const InterestSelectionScreen = () => {
+const InterestSelectionScreen = ({ navigation }) => {
+  const [interests, setInterests] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [searchText, setSearchText] = useState('');
 
+  // Fetch interests from API when component mounts
+  useEffect(() => {
+    const fetchInterests = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/interests`);
+        setInterests(response.data);
+      } catch (error) {
+        console.error('Error fetching interests:', error);
+      }
+    };
+    
+    fetchInterests();
+  }, []);
+
+  // Handle selecting and deselecting interests
   const handleInterestPress = (interest) => {
     if (selectedInterests.includes(interest)) {
       setSelectedInterests(selectedInterests.filter((item) => item !== interest));
@@ -69,10 +90,22 @@ const InterestSelectionScreen = () => {
     }
   };
 
+  // Handle clearing selections
   const handleClearSelection = () => {
     setSelectedInterests([]);
   };
 
+  // Handle saving selections to API
+  const handleSaveSelections = async () => {
+    try {
+      await axios.post(`${API_BASE_URL}/user/interests`, { interests: selectedInterests });
+      navigation.navigate('NextScreen'); // Replace with your actual screen name
+    } catch (error) {
+      console.error('Error saving interests:', error);
+    }
+  };
+
+  // Filter interests based on search text
   const filteredInterests = searchText
     ? interests.filter((interest) => interest.toLowerCase().includes(searchText.toLowerCase()))
     : interests;
@@ -80,10 +113,13 @@ const InterestSelectionScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Choose your interest</Text>
-      <Text style={{ color: '#fff', marginBottom: 20 }}>Choose your interest and with the help of Nonso you will get the best KDN+ has to offer.</Text>
+      <Text style={{ color: '#fff', marginBottom: 20 }}>
+        Choose your interest and with the help of Nonso you will get the best KDN+ has to offer.
+      </Text>
       <TextInput
         style={styles.searchInput}
         placeholder="Search interests"
+        placeholderTextColor="#ccc"
         value={searchText}
         onChangeText={(text) => setSearchText(text)}
       />
@@ -102,10 +138,10 @@ const InterestSelectionScreen = () => {
         ))}
       </View>
       <View style={styles.navigationButtons}>
-        <TouchableOpacity style={styles.navigationButton}>
+        <TouchableOpacity style={styles.navigationButton} onPress={handleClearSelection}>
           <Text style={{ color: '#fff' }}>Skip</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navigationButton} onPress={handleNextPress}>
+        <TouchableOpacity style={styles.navigationButton} onPress={handleSaveSelections}>
           <Text style={{ color: '#fff' }}>Next</Text>
         </TouchableOpacity>
       </View>

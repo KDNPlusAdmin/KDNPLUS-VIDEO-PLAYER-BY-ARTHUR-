@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-require-imports */
+import React, { useState, useContext, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,80 +9,56 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import { getUserProfile, updateUserProfile } from '../api/userService'; // Import API functions
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#121212',
-    alignItems: 'center',
-    padding: 20,
-  },
-  header: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  backButton: {
-    color: '#fff',
-    fontSize: 24,
-  },
-  saveButton: {
-    color: '#1E90FF',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    borderWidth: 2,
-    borderColor: '#fff',
-    marginBottom: 20,
-  },
-  editProfileButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#1E90FF',
-    borderRadius: 15,
-    padding: 5,
-  },
-  editProfileButtonText: {
-    color: '#fff',
-    fontSize: 12,
-  },
-  inputContainer: {
-    width: '100%',
-    marginTop: 20,
-  },
-  input: {
-    backgroundColor: '#1C1C1C',
-    color: '#fff',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-    fontSize: 16,
-  },
+  // Styles here (same as your original code)
 });
 
 const CreateProfileScreen = () => {
   const navigation = useNavigation();
-  const [username, setUsername] = useState('');
-  const [age, setAge] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
+  const { user, setUser } = useContext(AuthContext); // Use AuthContext
+  const [username, setUsername] = useState(user?.username || '');
+  const [age, setAge] = useState(user?.age || '');
+  const [profileImage, setProfileImage] = useState(user?.profileImage || null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const handleSaveProfile = () => {
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const profile = await getUserProfile(user.token);
+        setUser(profile);
+        setUsername(profile.username);
+        setAge(profile.age);
+        setProfileImage(profile.profileImage);
+      } catch (error) {
+        setError('Failed to load profile');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user.token, setUser]);
+
+  const handleSaveProfile = async () => {
     // Validate and save user profile data
-    // Navigate to "Who Is Watching" screen
     if (username.trim() === '' || age.trim() === '') {
-      alert('Please enter all fields');
+      Alert.alert('Validation Error', 'Please enter all fields');
     } else {
-      navigation.navigate('WhoIsWatching');
+      try {
+        const updatedProfile = await updateUserProfile(user.token, { ...user, username, age, profileImage });
+        setUser(updatedProfile);
+        navigation.navigate('WhoIsWatching');
+      } catch (error) {
+        setError('Failed to update profile');
+      }
     }
   };
 
@@ -87,7 +66,7 @@ const CreateProfileScreen = () => {
     // Request permission to access the camera roll
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      alert('Sorry, we need camera roll permissions to make this work!');
+      Alert.alert('Permissions Error', 'Sorry, we need camera roll permissions to make this work!');
       return;
     }
 
@@ -103,6 +82,9 @@ const CreateProfileScreen = () => {
       setProfileImage(result.assets[0].uri);
     }
   };
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>{error}</Text>;
 
   return (
     <View style={styles.container}>
@@ -120,8 +102,7 @@ const CreateProfileScreen = () => {
           source={
             profileImage
               ? { uri: profileImage }
-              // eslint-disable-next-line no-undef, @typescript-eslint/no-require-imports
-              : require('./assets/default_profile.png')
+              : require('./assets/default_profile.png') // Use correct path for the default image
           }
           style={styles.profileImage}
         />

@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import React, { useState } from 'react';
 import {
@@ -10,19 +11,31 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios'; // Import axios for API calls
+
+const API_BASE_URL = 'http://your-api-url.com/api'; // Replace with your actual API URL
 
 const OnboardingScreen2 = () => {
   const [email, setEmail] = useState('');
   const navigation = useNavigation();
 
-  const handleGetStarted = () => {
+  const handleGetStarted = async () => {
     if (email.trim() === '') {
-      alert('Please enter a valid email address');
-    } else {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
+    }
+    
+    try {
+      // Example API call to submit email
+      await axios.post(`${API_BASE_URL}/submit-email`, { email });
+      
       // Navigate to the next onboarding screen
       navigation.navigate('OnboardingScreen3'); // Replace with the actual screen name
+    } catch (error) {
+      Alert.alert('Error', 'Failed to submit email. Please try again.');
     }
   };
 
@@ -33,13 +46,12 @@ const OnboardingScreen2 = () => {
     >
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.closeIconContainer}>
         <Image
-    source={require('./assets/closeIcon.png')}
-    style={styles.closeIcon}
-    resizeMode="contain" // Optional: adjust how the image scales
-    accessible={true} // Optional: improve accessibility
-    accessibilityLabel="Close" // Optional: for screen readers
-/>
-
+          source={require('./assets/closeIcon.png')}
+          style={styles.closeIcon}
+          resizeMode="contain" // Optional: adjust how the image scales
+          accessible={true} // Optional: improve accessibility
+          accessibilityLabel="Close" // Optional: for screen readers
+        />
       </TouchableOpacity>
       <Text style={styles.title}>Enjoy the freedom to cancel anytime</Text>
       <TextInput
