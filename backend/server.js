@@ -8,7 +8,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const AWS = require('./config/awsConfig'); // Import AWS configuration
+const AWS = require('./config/awsconfig'); // Import AWS configuration
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
