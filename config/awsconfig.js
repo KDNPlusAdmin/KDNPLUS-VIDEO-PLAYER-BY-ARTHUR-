@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable no-undef */
-// config/awsConfig.js
+// config/awsconfig.js
 require('dotenv').config();
 const AWS = require('aws-sdk');
 
