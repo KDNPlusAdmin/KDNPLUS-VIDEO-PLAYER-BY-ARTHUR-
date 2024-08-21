@@ -82,3 +82,75 @@ To learn more about React Native, take a look at the following resources:
 # KDNPLUS-VIDEO-PLAYER-BY-ARTHUR-
 My Repository of Code FOR the Video Player including most of the UI side and THE Video player UI, some backend code and AIAvatar Nonso code.
 >>>>>>> origin/main
+>>>>>>> 
+
+KDNPlus Video Player Backend
+
+This repository contains the backend code for the KDNPlus Video Player app.
+
+ Getting Started
+
+ Prerequisites
+
+Ensure you have the following installed:
+
+- Node.js (v14.x or later)
+- npm (v6.x or later)
+- AWS CLI (for configuring AWS services)
+
+ Installation
+
+1. Clone the repository:
+
+   bash
+   git clone http://github.com/KDNPlusAdmin/KDNPLUS-VIDEO-PLAYER-BY-ARTHUR-.git
+   cd KDNPLUS-VIDEO-PLAYER-BY-ARTHUR-
+   
+
+2. Install dependencies:
+
+   bash
+   npm install
+   
+
+3. Configure environment variables:
+
+   Create a `.env` file in the root directory and add the following:
+
+   bash
+   AWS_ACCESS_KEY_ID=<your_aws_access_key_id>
+   AWS_SECRET_ACCESS_KEY=<your_aws_secret_access_key>
+   DYNAMODB_TABLE_NAME=<your_dynamodb_table_name>
+   JWT_SECRET=<your_jwt_secret_key>
+   
+
+4. Set up DynamoDB:
+
+   Ensure that your DynamoDB table is created and properly configured with the necessary attributes.
+
+5. Run the server:
+
+   bash
+   npm start
+   
+
+   The backend server should now be running on `http://localhost:5000`.
+
+ API Endpoints
+
+- Authentication:
+  - `POST /api/auth/register` - Register a new user.
+  - `POST /api/auth/login` - Authenticate a user.
+
+- Video Management:
+  - `GET /api/videos` - Retrieve all videos.
+  - `POST /api/videos` - Upload a new video.
+  - `GET /api/videos/:id` - Get details of a specific video.
+
+Testing
+
+Use tools like Postman to test the API endpoints.
+
+ Deployment
+
+Deploy the backend using services like AWS Elastic Beanstalk, EC2, or any other platform of your choice.
