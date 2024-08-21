@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable no-undef */
-const dynamoDb = require('../config/awsConfig');
+const dynamoDb = require('../config/awsconfig');
 
 // Get all users
 const getAllUsers = async (req, res) => {
